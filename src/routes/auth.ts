@@ -11,7 +11,7 @@ import { response } from "../types/types";
 import { trusted } from "mongoose";
 import { UserInfo } from "os";
 
-var process: NodeJS.Process;
+
 
 const auth: Application = express();
 
@@ -54,13 +54,14 @@ auth.post("/register", async (req: Request, res: Response) => {
         throw new Error("weak password");
       }
       let createUser = new User(userData);
-      await createUser.save();
+
+      await createUser.save()
 
       let token = jwt.sign(
         {
           email: req.body.email,
         },
-        process.env.JWT_TOKEN_KEY!
+        'process.env.JWT_TOKEN_KEY!'
       );
       (async (err, str) => {
         const transporter = mailer.createTransport({
@@ -75,7 +76,7 @@ auth.post("/register", async (req: Request, res: Response) => {
         const handlebarOptions = {
           viewEngine: {
             extName: ".handlebars",
-            partialsDir: path.resolve(".src/views"),
+            partialsDir: path.resolve("./src/views"),
             defaultLayout: false,
           },
           viewPath: path.resolve("./src/views"),
@@ -117,6 +118,103 @@ auth.post("/register", async (req: Request, res: Response) => {
     }
   }
 });
+
+auth.get("/verify", async (req: Request, res: Response)=>{
+
+  let response: response = {
+      status: false,
+      message: "somthing went wrong, try later"
+  }
+
+  try {
+      let {token} : any = req.query
+      let user:any = jwt.verify(token, 'process.env.JWT_TOKEN_KEY!', (error:any, decode:any)=>{
+          if (error) { return false }
+          else { return decode }
+      })
+      user =
+    (await User.findOne({
+      email: user.email,
+    })) || false;
+
+      if (user) {
+          console.log(user);
+          
+          User
+          .findByIdAndUpdate(user._id, {accountVerified: true})
+          .catch(()=>{throw new Error})
+
+          response.status = true;
+          response.message = "successfully Verified";
+      } else {
+          throw new Error("the token is invalid");
+          
+      }
+      
+
+  } catch (error) {
+     
+     response
+  }
+
+  res.json(response)
+})
+
+auth.post('/login', async (req: any, res: Response) => {
+
+  let response: response = {
+      status: false,
+      message: "somthing went wrong, try later"
+  }
+
+  try {
+
+      let loggingUser = await User.findOne({email: req.body.email})
+
+      if (!loggingUser) {
+          throw new Error("an account with this email does not exist")
+      }
+
+      if (loggingUser.password != req.body.password ) {
+          throw new Error("wrong password")
+      }else if (loggingUser.accountVerified == false) {
+          throw new Error("please verify your account")
+      }
+
+
+      let token = jwt.sign({id:loggingUser._id}, 'process.env.JWT_TOKEN2!');
+      console.log(loggingUser,token);
+  
+      
+
+      await User.findByIdAndUpdate(loggingUser._id, {login_token: token})
+      .then(()=>{
+
+          response = {
+              status : true,
+              message : "logged in",
+              data : {token},
+          }
+
+      })
+      .catch(()=>{
+          throw new Error("token authorization failed");
+          
+      })
+
+  } catch (error:any) {
+      response = {
+          ...response,
+          status : false,
+          message : error.message,
+      }
+  }
+
+  res.json(response)
+});
+
+
+
 
 export default auth;
 
