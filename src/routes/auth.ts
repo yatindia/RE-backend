@@ -6,6 +6,8 @@ import config from "../config";
 import jwt from "jsonwebtoken";
 import mailer from "nodemailer";
 var hbs = require("nodemailer-express-handlebars");
+var {engine} = require('express-handlebars');
+
 import path from "path";
 import { response } from "../types/types";
 import { trusted } from "mongoose";
@@ -14,6 +16,7 @@ import { UserInfo } from "os";
 
 
 const auth: Application = express();
+auth.use('/src',express.static(path.join(__dirname,'static')));
 
 auth.post("/register", async (req: Request, res: Response) => {
   console.log("hhh");
@@ -55,7 +58,15 @@ auth.post("/register", async (req: Request, res: Response) => {
       }
       let createUser = new User(userData);
 
-      await createUser.save()
+      await createUser.save().then(async () => {
+        response.status= true;
+        response.message= "Account Created verify before Login verifcation link sent to your email,It will expire in 1 hour";
+        
+      }).catch((error: any) => {
+        response.status = false
+        response.message = error.message
+    })
+      
 
       let token = jwt.sign(
         {
@@ -76,10 +87,10 @@ auth.post("/register", async (req: Request, res: Response) => {
         const handlebarOptions = {
           viewEngine: {
             extName: ".handlebars",
-            partialsDir: path.resolve("./src/views"),
+            partialsDir: path.resolve("./src/views/email"),
             defaultLayout: false,
           },
-          viewPath: path.resolve("./src/views"),
+          viewPath: path.resolve("./src/views/email"),
           extName: ".handlebars",
         };
 
@@ -104,16 +115,16 @@ auth.post("/register", async (req: Request, res: Response) => {
           }
         });
       })();
-
-      let response: any = {
-        status: true,
-        message: "Account Created Please verify before Login",
-        msg: userData,
-      };
-      res.json(response);
-    } catch (error) {
       return res.json({
-        response,
+        response
+      });
+
+     
+    } catch (error:any) {
+      response.status = false
+        response.message = error.message
+      return res.json({
+        response
       });
     }
   }
@@ -125,6 +136,9 @@ auth.get("/verify", async (req: Request, res: Response)=>{
       status: false,
       message: "somthing went wrong, try later"
   }
+
+res.setHeader('Content-Type', 'text/html');
+
 
   try {
       let {token} : any = req.query
@@ -142,19 +156,62 @@ auth.get("/verify", async (req: Request, res: Response)=>{
           
           User
           .findByIdAndUpdate(user._id, {accountVerified: true})
+          
           .catch(()=>{throw new Error})
 
-          response.status = true;
-          response.message = "successfully Verified";
+
+          auth.engine('handlebars', engine());
+          auth.set('view engine', 'handlebars');
+          auth.set('views', './src/views');
+
+res.render('main');
+          // console.log(__dirname);
+          // res.setHeader('Content-Type', 'text/html');
+          // res.sendFile(path.join(__dirname, '/index.html'));
+
+          // res.send(`<html lang="en">
+       
+          // <body>
+          // <div>
+          //         <h2>E-mail Successfully Verified</h2>
+          //         <a href="http//:127.0.0.1.3000/login">back to login</a>
+          //     </div>
+          // </body>
+          // </html>`);
+          // res.end()
+          // response.status = true;
+          // response.message = "successfully Verified";
+
+
+
+// auth.engine('handlebars', hbss({defaultLayout: 'main',
+// LayoutsDir:path.join(__dirname,'views/verifScss')}));
+// auth.set('view engine', 'handlebars');
+
+// res.render('succes');
+// auth.use(express.static(path.join(__dirname, 'verifScss')))
+// auth.engine('handlebars', hbss({extname: 'handlebars', defaultLayout: 'layout', layoutsDir: __dirname + '/views/'}));
+// auth.set('views', path.join(__dirname, 'views/verifScss'));
+// auth.set('view engine', 'handlebars');
+// res.render('succes');
+// res.sendFile(path.join(__dirname + 'src/verifScss/succes'))
+// res.setHeader('Content-Type', 'text/html');
+// res.sendFile(__dirname + '/succes.html');
+
+// res.writeHead(200, {'Content-Type': 'text/html'})
+//   res.write(require('./succes.html'))
+//   res.end()
+
       } else {
           throw new Error("the token is invalid");
           
       }
       
 
-  } catch (error) {
+  } catch (error:any) {
      
-     response
+    response.status = false
+    response.message = error.message
   }
 
   res.json(response)
@@ -213,6 +270,171 @@ auth.post('/login', async (req: any, res: Response) => {
   res.json(response)
 });
 
+auth.post("/resetpassword",  async (req: Request, res: Response) =>{
+  let response: response = {
+      status: false,
+      message: "somthing went wrong, try later"
+  }
+
+  await User.findOne({email: req.body.email})
+  .then(async (res:any)=>{
+
+
+      if (!res) {
+        // console.log('hh')
+          throw new Error("user does not exist.");
+          
+      }
+      if (!res.accountVerified) {
+          throw new Error("user account not verified.");
+          
+      }
+
+      let token = jwt.sign(
+        {
+          email: req.body.email,
+        },
+        'process.env.JWT_TOKEN_KEY!'
+      );
+      
+      (async (err, str) => {
+        const transporter = mailer.createTransport({
+          host: "smtp.ethereal.email",
+          port: 587,
+          auth: {
+            user: "maci.medhurst97@ethereal.email",
+            pass: "hVZ63n8vnVcf6JhhXb",
+          },
+        });
+
+        const handlebarOptions = {
+          viewEngine: {
+            extName: ".handlebars",
+            partialsDir: path.resolve("./src/views/password"),
+            defaultLayout: false,
+          },
+          viewPath: path.resolve("./src/views/password"),
+          extName: ".handlebars",
+        };
+
+        transporter.use("compile", hbs(handlebarOptions));
+
+        var mailOptions = {
+          from: "verify@test.com", // sender address
+          to: `${res.email}`, // list of receivers
+          subject: "Password Recovery ✔", // Subject line
+
+          template: "password",
+          context: {
+            link: `${config.API}/auth/verifypassword?token=${token}`,
+          },
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        });
+      })();
+
+          response.status = true
+          response.message = "please check your e-mail To Reset Password"
+      
+  })
+  .catch((error:any)=>{
+              
+      response = {...response, status: false, message: error.message }
+   
+  })
+     
+
+  res.json(response)
+})
+
+
+
+
+
+auth.post("/reverification",  async (req: any, res: Response) =>{
+  
+  let response: response = {
+    status: false,
+    message: "somthing went wrong, try later"
+}
+
+try {
+  await User.findOne({email: req.body.email})
+.then(async (user:any)=>{
+
+
+    if (!user) {
+        throw new Error("user does not exist create new account.");
+    }
+    if (user && !user.accountVerified) {
+      let token = jwt.sign(
+        {
+          email: req.body.email,
+        },
+        'process.env.JWT_TOKEN_KEY!'
+      );
+      (async (err, str) => {
+        const transporter = mailer.createTransport({
+          host: "smtp.ethereal.email",
+          port: 587,
+          auth: {
+            user: "maci.medhurst97@ethereal.email",
+            pass: "hVZ63n8vnVcf6JhhXb",
+          },
+        });
+
+        const handlebarOptions = {
+          viewEngine: {
+            extName: ".handlebars",
+            partialsDir: path.resolve("./src/views/email"),
+            defaultLayout: false,
+          },
+          viewPath: path.resolve("./src/views/email"),
+          extName: ".handlebars",
+        };
+
+        transporter.use("compile", hbs(handlebarOptions));
+
+        var mailOptions = {
+          from: "verify@test.com", // sender address
+          to: `${user.email}`, // list of receivers
+          subject: "Account Verification ✔", // Subject line
+
+          template: "email",
+          context: {
+            link: `${config.API}/auth/verify?token=${token}`,
+          },
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        });
+      })();
+      response.status= true;
+        response.message= "verifcation link sent to your email,It will expire in 1 hour";
+      
+        
+    }})
+} catch (error:any) {
+  response.status = false
+    response.message = error.message
+  ;
+}
+return res.json({
+  response
+})
+
+})
 
 
 
