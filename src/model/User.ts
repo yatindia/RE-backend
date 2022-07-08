@@ -28,6 +28,10 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  mobileVerified: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const User = model("User", UserSchema)

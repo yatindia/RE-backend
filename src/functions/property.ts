@@ -1,15 +1,38 @@
 import Property from "../model/Properties"
+import User from "../model/User";
+import { response } from "../types/types";
+
 import {Application,Request,Response} from "express";
 
 
 export const createProperty = async (req:Request, res:Response) => {
-  const newProperty = new Property(req.body);
+
+  let response: response = {
+    status: false,
+    message: "Something Went wrong, Could Not signup at the moment.",
+  };
+  const emailCheck =
+    (await User.findOne({
+      email: req.body.email,
+    })) || false;
+
+  if (!emailCheck) {
+    throw new Error("User not exist");
+  }else{
+    const newProperty = new Property(req.body);
+    
 
   try {
     const savedproperty = await newProperty.save();
     res.status(200).json(savedproperty);
-  } catch (err) {throw err;
+  } catch (error:any) {response.status = false
+    response.message = error.message
   }
+  }
+  res.json({
+    response
+  })
+
 };
 export const updateProperty = async (req:Request, res:Response) => {
   try {

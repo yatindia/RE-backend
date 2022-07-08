@@ -7,14 +7,14 @@ import {
 } from "../functions/property";
 const property:Application = express();
 //CREATE
-property.post("/",createProperty);
+property.post("/create",createProperty);
 
 //UPDATE
-property.put("/:id", updateProperty);
+property.put("/update:id", updateProperty);
 //DELETE
-property.delete("/:id", deleteProperty);
+property.delete("/delete:id", deleteProperty);
 //GET
 
-property.get("/find/:id", getSingleProperty);
+property.get("/findSigleProperty/:id", getSingleProperty);
 
 export default property

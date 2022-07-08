@@ -13,10 +13,6 @@ const PropertySchema = new Schema({
     type: String,
     required: true,
   },
-  distance: {
-    type: String,
-    required: true,
-  },
   photos: {
     type: [String],
   },
