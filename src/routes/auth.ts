@@ -1,5 +1,5 @@
 import express, { Application, Request, Response } from "express";
-import User from "../model/User";
+import {User} from "../model/Model";
 import config from "../config";
 import jwt from "jsonwebtoken";
 import mailer from "nodemailer";

@@ -10,9 +10,9 @@ const property:Application = express();
 property.post("/create",createProperty);
 
 //UPDATE
-property.put("/update:id", updateProperty);
+property.put("/update/:id", updateProperty);
 //DELETE
-property.delete("/delete:id", deleteProperty);
+property.delete("/delete/:id", deleteProperty);
 //GET
 
 property.get("/findSigleProperty/:id", getSingleProperty);

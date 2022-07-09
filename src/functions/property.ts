@@ -1,8 +1,10 @@
-import Property from "../model/Properties"
-import User from "../model/User";
+import {Properties} from "../model/Model"
+import {User} from "../model/Model";
 import { response } from "../types/types";
 
 import {Application,Request,Response} from "express";
+import property from "../routes/property";
+
 
 
 export const createProperty = async (req:Request, res:Response) => {
@@ -19,12 +21,15 @@ export const createProperty = async (req:Request, res:Response) => {
   if (!emailCheck) {
     throw new Error("User not exist");
   }else{
-    const newProperty = new Property(req.body);
+    const newProperty:any = new Properties(req.body);
+    newProperty.user_id =await emailCheck._id
     
 
   try {
     const savedproperty = await newProperty.save();
-    res.status(200).json(savedproperty);
+    // res.status(200).json(savedproperty);
+    response.status= true;
+    response.message= "Property saved successfully.";
   } catch (error:any) {response.status = false
     response.message = error.message
   }
@@ -36,7 +41,8 @@ export const createProperty = async (req:Request, res:Response) => {
 };
 export const updateProperty = async (req:Request, res:Response) => {
   try {
-    const updatedproperty = await Property.findByIdAndUpdate(
+    console.log(req)
+    const updatedproperty = await Properties.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
       { new: true }
@@ -47,14 +53,14 @@ export const updateProperty = async (req:Request, res:Response) => {
 };
 export const deleteProperty = async (req:Request, res:Response) => {
   try {
-    await Property.findByIdAndDelete(req.params.id);
+    await Properties.findByIdAndDelete(req.params.id);
     res.status(200).json("Property has been deleted.");
   } catch (err) {throw err;
   }
 };
 export const getSingleProperty = async (req:Request, res:Response) => {
   try {
-    const property = await Property.findById(req.params.id);
+    const property = await Properties.findById(req.params.id);
     res.status(200).json(property);
   } catch (err) {throw err;
   }

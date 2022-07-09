@@ -1,7 +1,7 @@
 
 
-import User from "../model/User"
-import jwt from "jsonwebtoken"
+// import User from "../model/Model"
+// import jwt from "jsonwebtoken"
 // import Cryptr from "cryptr"
 // import mailer from "nodemailer"
 
