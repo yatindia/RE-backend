@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const jwtToken = process.env.JWT_TOKEN_KEY!;
 const jwtToken2 = process.env.JWT_TOKEN_KEY2!;
+const jwtOTPToken = process.env.JWT_OTP_KEY!;
 
 import path from "path";
 import { response } from "../types/types";
@@ -23,7 +24,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN!;
 const client = require("twilio")(accountSid, authToken);
 
 auth.post("/sendOTP", async (req, res) => {
-  const { phone } = req.body;
+  const { phoneNumber } = req.body;
 
   const otp = Math.floor(100000 + Math.random() * 900000); // generate OTP
 
@@ -36,11 +37,17 @@ auth.post("/sendOTP", async (req, res) => {
 
       from: twilioNum,
 
-      to: phone,
+      to: phoneNumber,
     })
 
     .then((messages: any) => {
-      res.status(200).json({ phone, otp });
+      let token = jwt.sign(
+        {
+          phone:phoneNumber,
+        },
+        jwtOTPToken,
+      );
+      res.status(200).json({ phoneNumber, otp ,token });
     })
 
     .catch((err: any) => {
@@ -50,30 +57,37 @@ auth.post("/sendOTP", async (req, res) => {
     });
 });
 
-auth.post("/checkOTP", async (req, res) => {
+auth.get("/checkOTP", async (req, res) => {
   let response: response = {
     status: false,
     message: "Something Went wrong.",
   };
   try {
-    const phoneCheck =
-  (await User.findOne({
-    email: req.body.phoneNumber,
-  })) || false;
-  if (phoneCheck) {
-    User.findByIdAndUpdate(phoneCheck._id, { mobileVerified: true }).catch(() => {
+    let { token }: any = req.query;
+    let phoneNumber: any = jwt.verify(token, jwtOTPToken, (error: any, decode: any) => {
+      if (error) {
+        return false;
+      } else {
+        return decode;
+      }
+    });
+    const user =
+    (await User.findOne({
+      phoneNumber
+    })) || false;
+    console.log(user);
+    
+  if (user) {
+    User.findByIdAndUpdate(user._id, { mobileVerified: true }).catch(() => {
       throw new Error();
-    })
-  }else{
+    });
     response.status= true,
     response.message = 'Mobile number Authenticated Successfully';
-
-  }
-  }catch (error: any) {
+  }}catch (error: any) {
     response.status = false;
     response.message = error.message;
   }
-  
+  res.json(response);
 })
 
 
