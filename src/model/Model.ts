@@ -48,6 +48,9 @@ const PropertySchema = new Schema({
     type: String,
     required: true,
   },
+  primaryImage: {
+    type: String,
+  },
   photos: {
     type: [String],
   },
@@ -65,10 +68,25 @@ const PropertySchema = new Schema({
   }
 });
 
+const ImageSchema = new Schema({
+ 
+  propertyImage: {
+    type: String,
+  },
+  cloudinary_id:{
+    type: String
+  }
+ 
+});
+
+
 
 
 export const Properties = model("Properties", PropertySchema)
 
 export const User = model("User", UserSchema)
+
+export const Image = model("Image", ImageSchema)
+
 
 
