@@ -111,10 +111,9 @@ import {Request,Response} from 'express'
 imageupload.use(bodyParser.urlencoded(
       { extended:true }
 ))
-imageupload.set("view engine","ejs");
 
 
-// SET STORAGE
+
 let storage = multer.diskStorage({
     destination: function (req:any, file:any, cb:any) {
       cb(null, 'src/uploads')
@@ -131,6 +130,7 @@ let storage = multer.diskStorage({
 imageupload.post("/",upload.single('image'),(req:Request,res:Response)=>{
     let img = fs.readFileSync(req.file?.path);
     
+
 })
 
 
