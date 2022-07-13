@@ -35,6 +35,23 @@ const UserSchema = new Schema({
   properties: [{ type: Schema.Types.ObjectId, ref: 'Properties' }]
 });
 
+const ImageSchema = new Schema({
+ 
+  propertyImage: {
+    type: String,
+  },
+  cloudinary_id:{
+    type: String
+  },
+  property_id:{
+    type: String
+  }
+ 
+});
+
+
+
+
 const PropertySchema = new Schema({
   propertyBuyingOption: {
     type: String,
@@ -51,9 +68,7 @@ const PropertySchema = new Schema({
   primaryImage: {
     type: String,
   },
-  photos: {
-    type: [String],
-  },
+  photos: [ImageSchema],
   title: {
     type: String,
     required: true,
@@ -65,19 +80,15 @@ const PropertySchema = new Schema({
   user_id:{
     type: String,
     default: null
-  }
+  },
+  created_at: {
+    type: Date,
+    default: new Date(),
+    immutable: true
+}
 });
 
-const ImageSchema = new Schema({
- 
-  propertyImage: {
-    type: String,
-  },
-  cloudinary_id:{
-    type: String
-  }
- 
-});
+
 
 
 
