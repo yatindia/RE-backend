@@ -35,5 +35,5 @@ app.get("/",(req:Request,res:Response)=>{
 
 app.listen(process.env.PORT, () => {
     connect();
-    console.log(`Connected to backend${process.env.PORT}.`);
+    console.log(`Server Running at http://127.0.0.1:${process.env.PORT}`);
   });
