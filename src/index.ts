@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import auth from "./routes/auth"
 import property from "./routes/property";
 import imageupload from "./routes/imageUpload";
+import propertysearch from "./routes/search";
+
 
 
 
@@ -25,6 +27,8 @@ const connect = () => {
 app.use("/auth",auth)
 app.use("/property", property)
 app.use("/imageupload", imageupload)
+app.use("/propertysearch", propertysearch)
+
 
 
 

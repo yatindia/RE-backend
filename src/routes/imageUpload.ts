@@ -97,52 +97,117 @@
 
 
 
-const express = require("express"),
-      imageupload = express(),
-      bodyParser = require("body-parser"),
-      fs = require("fs"),
-      multer = require("multer");
-import path from 'path';
-import {Image} from '../model/Model'
-import {Request,Response} from 'express'
+// const express = require("express"),
+//       imageupload = express(),
+//       bodyParser = require("body-parser"),
+//       fs = require("fs"),
+//       multer = require("multer");
+// import path from 'path';
+// import {Image} from '../model/Model'
+// import {Request,Response} from 'express'
 
 
    
-imageupload.use(bodyParser.urlencoded(
-      { extended:true }
-))
+// imageupload.use(bodyParser.urlencoded(
+//       { extended:true }
+// ))
 
 
 
-let storage = multer.diskStorage({
-    destination: function (req:any, file:any, cb:any) {
-      cb(null, 'src/uploads')
-    },
-    filename: function (req:any, file:any, cb:any) {
-      cb(null, file.fieldname + '-' + Date.now())
-    }
-  })
+// let storage = multer.diskStorage({
+//     destination: function (req:any, file:any, cb:any) {
+//       cb(null, 'src/uploads/')
+//     },
+//     filename: function (req:any, file:any, cb:any) {
+//       cb(null, file.fieldname + '-' + Date.now())
+//     }
+//   })
 
-  let upload = multer({ storage: storage })
+//   let upload = multer({ storage: storage })
 
  
 
-imageupload.post("/",upload.single('image'),(req:Request,res:Response)=>{
-    let img = fs.readFileSync(req.file?.path);
+// imageupload.post("/",upload.single('image'),(req:Request,res:Response)=>{
+//     // let img = fs.readFileSync(req.file?.filename);
+    
+// console.log(req.file);
+
+// })
+
+
+
+
+// imageupload.get("/Sigleimg/:id", async (req:any,res:any)=>{
+//   try {
+//     const img = await Image.findById(req.params.id);
+//     res.status(200).json(img);
+//   } catch (err) {throw err;
+//   }
+// })
+
+
+import express from "express";
+import formidable from "formidable"
+import { v1 as uuidv1, v4 as uuidv4 } from 'uuid';
+import {Request,Response} from 'express'
+import { response } from "../types/types";
+
+
+
+
+const imageupload = express();
+
+
+
+imageupload.post('/', async (req:Request, res:Response) => {
+
+  let response: response = {
+    status: false,
+    message: "somthing went wrong, try later",
+  };
+  let imageName;
+
+try {
+  const form = new formidable.IncomingForm();
+
+    
+    form.parse(req,function (err, fields, data) {
+      if (err) {
+       err.type = 'system';
+  
+      }
+    });
+
+    form.on('fileBegin', function (name, file:any){
+
+      const uniqId = uuidv4()
+      
+      file.path = '/home/itemp01/Desktop/Sathya/realEstateWebsite-Backend/uploads/' + uniqId + file.name;
+
+      imageName = (uniqId + file.name)
+      
+      response.status = true;
+      response.message = 'Image uploaded successfully'
+
+      res.json({
+        ...response,
+        imageName: imageName
+      })
+      
+      
+  });
+  
+} catch (error:any) {
+  response.status = false;
+  response.message=error.message
+}
+
     
 
-})
+ 
+});
 
 
-
-
-imageupload.get("/Sigleimg/:id", async (req:any,res:any)=>{
-  try {
-    const img = await Image.findById(req.params.id);
-    res.status(200).json(img);
-  } catch (err) {throw err;
-  }
-})
 
 
 export default imageupload
