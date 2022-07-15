@@ -1,15 +1,15 @@
-export type signup  = {
-    name: string,
+// export type signup  = {
+//     name: string,
 
-    email: string,
+//     email: string,
 
-    password: string,
+//     password: string,
 
-    phone_number: {
-        type: string,
-        required: true
-    },
-}
+//     phone_number: {
+//         type: string,
+//         required: true
+//     },
+// }
 
 export type response = {
     status:boolean,

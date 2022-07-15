@@ -1,12 +1,12 @@
 import express, { Application, Request, Response } from "express";
-import { Properties } from "../model/Model";
+import { Property } from "../model/Properties";
 
 const app = express();
 
 app.post("/search", async (req: Request, res: Response) => {
 
     try {
-        let data = await Properties.find({
+        let data = await Property.find({
             propertyBuyingOption: req.body.buyingOption,
             location: req.body.location,
             tittle: req.body.tittle,
@@ -14,7 +14,7 @@ app.post("/search", async (req: Request, res: Response) => {
           });
           if (data) {
             res.send(data);
-            // res.status(500).send({ status: false, message: "Can't find property" });
+            
           } else {
             res.send(data)
           }
@@ -28,7 +28,7 @@ app.post("/search", async (req: Request, res: Response) => {
 app.get("/search/:key", async (req: Request, res: Response) => {
 
     try {
-        let data = await Properties.find({
+        let data = await Property.find({
             $or: [
               { propertyBuyingOption: { $regex: req.params.key } },
               { location: { $regex: req.params.key } },
@@ -38,7 +38,7 @@ app.get("/search/:key", async (req: Request, res: Response) => {
           });
           if (data) {
             res.send(data);
-            // res.status(500).send({ status: false, message: "Can't find property" });
+           
           } else {
             res.send(data)
           }
@@ -49,27 +49,19 @@ app.get("/search/:key", async (req: Request, res: Response) => {
   
 });
 
-app.get("/user/:key", async (req: Request, res: Response) => {
-
-    try {
-        let data = await Properties.find({
-            $or: [{ user_id: { $regex: req.params.key } }],
-          });
-        
-          if (data) {
-            res.send(data);
-        
-            
-          } else {
-            res.send(data)
-            //   .status(500)
-            //   .send({ status: false, message: "User doesn't has any property" });
-          }
-    } catch (error:any) {
-        res.send(error.message)
-    }
-
-  
+app.get("/findSigleProperty/:id", async (req:Request, res:Response) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    res.status(200).json(property);
+  } catch (err) {throw err;
+  }
 });
+
+// .status(500)
+// .send({ status: false, message: "User doesn't has any property" });
+// res.status(500).send({ status: false, message: "Can't find property" });
+// res.status(500).send({ status: false, message: "Can't find property" });
+
+
 
 export default app;
