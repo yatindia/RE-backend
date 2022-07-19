@@ -16,7 +16,7 @@ const PropertySchema = new Schema({
     primaryImage: {
       type: String,
     },
-    photos: [{ type: String }],
+    // photos: [{ type: String }],
     tittle: {
       type: String,
       required: true,

@@ -7,43 +7,46 @@ const app: Application = express();
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req:Request, res:Response, next:NextFunction)=>{
-    let headers = req.headers['authorization']
-    let bearer:any = headers?.split(" ")
-    let token = bearer[1]
+// app.use((req:Request, res:Response, next:NextFunction)=>{
+//     let headers = req.headers['authorization']
+//     let bearer:any = headers?.split(" ")
+//     let token = bearer[1]
 
-    jwt.verify(token, process.env.JWT_TOKEN_KEY2!, function(err:any, decoded:any) {
-        if (err) {
+//     jwt.verify(token, process.env.JWT_TOKEN_KEY2!, function(err:any, decoded:any) {
+//         if (err) {
             
-            res.json({
-                status: false,
-                message: "somthing went wrong, try later",
-            })
+//             res.json({
+//                 status: false,
+//                 message: "somthing went wrong, try later",
+//             })
             
-        }else{
-            req.body = {
-                ...req.body,
-                authorization : {
-                    _id : decoded.id
-                }
+//         }else{
+//             req.body = {
+//                 ...req.body,
+//                 authorization : {
+//                     _id : decoded.id
+//                 }
                 
-            }
-            next()
+//             }
+//             next()
             
-        }
-      });
+//         }
+//       });
 
 
    
-})
+// })
 
 app.get("/user/:key", async (req: Request, res: Response) => {
 
     try {
         const loggeduser =
         (await User.findOne({
-          _id: req.body.authorization._id,
+          _id: req.params.key,
         })) || false;
+
+        console.log(loggeduser);
+        
 
         if (!loggeduser) {
             throw new Error("User not exist");

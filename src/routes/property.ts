@@ -12,35 +12,35 @@ const property:Application = express();
 property.use(express.urlencoded({ extended: true }));
 
 
-property.use((req:Request, res:Response, next:NextFunction)=>{
-    let headers = req.headers['authorization']
-    let bearer:any = headers?.split(" ")
-    let token = bearer[1]
+// property.use((req:Request, res:Response, next:NextFunction)=>{
+//     let headers = req.headers['authorization']
+//     let bearer:any = headers?.split(" ")
+//     let token = bearer[1]
 
-    jwt.verify(token, process.env.JWT_TOKEN_KEY2!, function(err:any, decoded:any) {
-        if (err) {
+//     jwt.verify(token, process.env.JWT_TOKEN_KEY2!, function(err:any, decoded:any) {
+//         if (err) {
             
-            res.json({
-                status: false,
-                message: "somthing went wrong, try later",
-            })
+//             res.json({
+//                 status: false,
+//                 message: "somthing went wrong, try later",
+//             })
             
-        }else{
-            req.body = {
-                ...req.body,
-                authorization : {
-                    _id : decoded.id
-                }
+//         }else{
+//             req.body = {
+//                 ...req.body,
+//                 authorization : {
+//                     _id : decoded.id
+//                 }
                 
-            }
-            next()
+//             }
+//             next()
             
-        }
-      });
+//         }
+//       });
 
 
    
-})
+// })
 
 //CREATE
 property.post("/create",async (req:Request, res:Response) => {
@@ -49,15 +49,17 @@ property.post("/create",async (req:Request, res:Response) => {
     status: false,
     message: "Something Went wrong.",
   };
+  console.log(req.body);
+  
   const loggeduser =
     (await User.findOne({
-      _id: req.body.authorization._id,
+      _id: req.body.user_id,
     })) || false;
 
   if (!loggeduser) {
     throw new Error("User not exist");
   }else{
-    const newProperty:any = new Property(req.body.propertydetails);
+    const newProperty:any = new Property(req.body);
     newProperty.user_id =await loggeduser._id
     
 

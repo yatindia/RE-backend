@@ -155,6 +155,7 @@ user.post("/passwordupdate", async (req: any, res: Response)=>{
 
 
 
+
 export default user;
 
 
