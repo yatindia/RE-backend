@@ -205,7 +205,7 @@ property.delete("/:id", async (req:Request, res:Response) => {
 });
 
 
-property.get("/search", async (req:Request, res:Response) => {
+property.post("/search", async (req:Request, res:Response) => {
 
     let response:response = {
         message : "somthing went wrong",
