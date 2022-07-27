@@ -1,0 +1,175 @@
+@url = http://127.0.0.1:5000/property
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYzk4OGI2ZGYyMWFkN2U2NjU4YTk4NyIsImlhdCI6MTY1ODc3NTIyOH0.m6BRBK3USfTGeny6o4gIiRQGNpdCOIAJPb8rS89hizQ
+
+###
+POST {{url}}/create
+Content-Type: application/json
+Authorization: <Bearer> {{token}}
+
+
+{
+ "property": {
+      "photos": [
+        "https://images.pexels.com/photos/323705/pexels-photo-323705.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+        "https://cdn.britannica.com/08/187508-050-D6FB5173/Shanghai-Tower-Gensler-San-Francisco-world-Oriental-2015.jpg",
+        "https://primestone.com/wp-content/uploads/2020/04/Smart-Buildings-1.jpg"
+        ],
+  "type": "text",
+  "space_use": "text",
+  "for": "text",
+  "address_1": "text",
+  "address_2": "text",
+  "country": "text",
+  "state": "text",
+  "city": "text",
+  "zip_code": 110011,
+  "year_built": 1950,
+  "renovated": false,
+  "building_size": 1550,
+  "lot_size": 1700,
+  "construction_type": "text",
+  "electricity": "text",
+  "zoning": "text",
+  "highlights": [
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+  ],
+  "featured": false,
+  "importance": 0,
+  "gps": {
+    "lat": 10,
+    "lng": 10
+  },
+  "floors": [
+    {
+      "floor_number": 1,
+      "floor_size": 1300,
+      "term": "text1",
+      "rate": 1000,
+      "space_use": "text",
+      "condition": "none",
+      "amenities": [
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      ],
+      "period_of_tenure": 1,
+      "avaliable": true
+    },
+    {
+      "floor_number": 1,
+      "floor_size": 1300,
+      "term": "text1",
+      "rate": 1000,
+      "space_use": "text",
+      "condition": "none",
+      "amenities": [
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      ],
+      "period_of_tenure": 1,
+      "avaliable": true
+    }
+  ]
+ }
+}
+
+###
+GET {{url}}/post/62deebadb4247a903e860c14
+Authorization: <Bearer> {{token}}
+
+###
+PUT {{url}}/62deeea6197022e2fc322bbb
+Content-Type: application/json
+Authorization: <Bearer> {{token}}
+
+
+{
+ "property": {
+      "photos": ["photo74","photo2","photo3"],
+  "type": "text",
+  "space_use": "text",
+  "for": "text",
+  "address_1": "text",
+  "address_2": "text",
+  "country": "text",
+  "state": "text",
+  "city": "text",
+  "zip_code": 110011,
+  "year_built": 1950,
+  "renovated": false,
+  "building_size": 1550,
+  "lot_size": 1700,
+  "construction_type": "text",
+  "electricity": "text",
+  "zoning": "text",
+  "highlights": [
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+  ],
+  "featured": false,
+  "importance": 0,
+  "gps": {
+    "lat": 10,
+    "lng": 10
+  },
+  "floors": [
+    {
+      "floor_number": 1,
+      "floor_size": 1300,
+      "term": "text1",
+      "rate": 1000,
+      "space_use": "text",
+      "condition": "none",
+      "amenities": [
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      ],
+      "period_of_tenure": 1,
+      "avaliable": true
+    },
+    {
+      "floor_number": 1,
+      "floor_size": 1300,
+      "term": "text1",
+      "rate": 1000,
+      "space_use": "text",
+      "condition": "none",
+      "amenities": [
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      ],
+      "period_of_tenure": 1,
+      "avaliable": true
+    }
+  ]
+ }
+}
+
+
+###
+DELETE {{url}}/62deee6c197022e2fc322b93
+Authorization: <Bearer> {{token}}
+###
+
+GET {{url}}/search
+Authorization: <Bearer> {{token}}
+Content-Type: application/json
+
+{
+    "skip" : 0,
+    "limit" : 10,
+    "search" : " "
+}

@@ -1,5 +1,5 @@
 import express, { Application, Request, Response } from "express";
-import { Property } from "../model/Properties";
+import { Property } from "../model/Property";
 
 const app = express();
 

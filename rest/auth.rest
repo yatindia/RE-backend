@@ -1,7 +1,10 @@
+@url = http://127.0.0.1:5000/auth
 
-POST http://127.0.0.1:5000/auth/user
+###
+POST {{url}}/login
 Content-Type: application/json
 
 {
-    "_id" : "62c599088759576aa2086b87"
+    "email" : "dmdd@gmail.com",
+    "password" : "1212"
 }
