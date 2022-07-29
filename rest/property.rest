@@ -15,67 +15,92 @@ Authorization: <Bearer> {{token}}
         "https://cdn.britannica.com/08/187508-050-D6FB5173/Shanghai-Tower-Gensler-San-Francisco-world-Oriental-2015.jpg",
         "https://primestone.com/wp-content/uploads/2020/04/Smart-Buildings-1.jpg"
         ],
-  "type": "text",
-  "space_use": "text",
-  "for": "text",
-  "address_1": "text",
-  "address_2": "text",
-  "country": "text",
-  "state": "text",
-  "city": "text",
-  "zip_code": 110011,
-  "year_built": 1950,
+        "video":"https://www.youtube.com/watch?v=hNAbQYU0wpg",
+  "type": "commercial",
+  "space_use": "office",
+  "for": "sale",
+  "address_1": "no 26 main street",
+  "address_2": "no 26 main street",
+  "country": "america",
+  "state": "colorado",
+  "city": "denver",
+  "zip_code": 110049,
+  "year_built": 2020,
   "renovated": false,
-  "building_size": 1550,
-  "lot_size": 1700,
-  "construction_type": "text",
-  "electricity": "text",
-  "zoning": "text",
+  "building_size": 1750,
+  "lot_size": 1800,
+  "construction_type": "commercial",
+  "electricity": "domestic",
+  "zoning": "zone",
   "highlights": [
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      "the South Central region of the United States. .",
+      "miles, and with more than 29.1 million residents in 2020, it is the second-largest U.S. state by both area.",
+      "tknown as the and is famous for its BBQ, live music, hot temperatures.",
+      " live music, hot temperaturestowns like historic Asbury Park and Cape May,."
   ],
   "featured": false,
   "importance": 0,
   "gps": {
-    "lat": 10,
-    "lng": 10
+    "lat": -87,
+    "lng": 54
   },
   "floors": [
     {
       "floor_number": 1,
-      "floor_size": 1300,
+      "floor_size": 2400,
       "term": "text1",
-      "rate": 1000,
-      "space_use": "text",
+      "rate": 6000,
+      "space_use": "shop",
       "condition": "none",
       "amenities": [
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+        "air condition.",
+        "rest room.",
+        "water facility.",
+        "fridge.",
+        "dining tables.",
+        "24/7 survillence",
+        "grill unit."
       ],
       "period_of_tenure": 1,
       "avaliable": true
     },
     {
-      "floor_number": 1,
-      "floor_size": 1300,
+      "floor_number": 2,
+      "floor_size": 2400,
       "term": "text1",
-      "rate": 1000,
-      "space_use": "text",
+      "rate": 6000,
+      "space_use": "office",
       "condition": "none",
       "amenities": [
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+        "wash room.",
+        "fully furnished.",
+        "air conditioned.",
+        "furniture.",
+        "24/7 survillence."
+      ],
+      "period_of_tenure": 1,
+      "avaliable": true
+    },
+     {
+      "floor_number": 3,
+      "floor_size": 2400,
+      "term": "text1",
+      "rate": 6000,
+      "space_use": "shop",
+      "condition": "none",
+      "amenities": [
+        "air condition.",
+        "rest room.",
+        "water facility.",
+        "fridge.",
+        "dining tables.",
+        "24/7 survillence",
+        "grill unit."
       ],
       "period_of_tenure": 1,
       "avaliable": true
     }
+    
   ]
  }
 }

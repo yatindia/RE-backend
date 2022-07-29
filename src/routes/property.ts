@@ -136,7 +136,7 @@ property.put("/:id", async (req:Request, res:Response) => {
 
 //READ
 property.get("/post/:id",async (req:Request, res:Response) => {
-
+console.log('kkk')
     let response:response = {
         message : "somthing went wrong",
         status: false
@@ -144,7 +144,7 @@ property.get("/post/:id",async (req:Request, res:Response) => {
 
     try {
         let data;
-        await Property.findById(req.params.id)
+        await Property.find({owner:req.params.id})
         .then(res => {
             data = res
         })
