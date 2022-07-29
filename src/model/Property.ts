@@ -2,6 +2,7 @@ import {Schema, model} from "mongoose";
 
 const PropertySchema = new Schema({
   owner: {type: String, required: true},
+  video: {type: String, required: true},
   photos: [{type: String, required: true}],
   type: {type: String, required: true},
   space_use: {type: String, required: true},
