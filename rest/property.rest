@@ -19,13 +19,13 @@ Authorization: <Bearer> {{token}}
   "type": "commercial",
   "space_use": "office",
   "for": "sale",
-  "address_1": "no 26 main street",
-  "address_2": "no 26 main street",
-  "country": "america",
-  "state": "colorado",
-  "city": "denver",
-  "zip_code": 110049,
-  "year_built": 2020,
+  "address_1": "Norman St & Delancey St at SE corner",
+  "address_2": "Norman St & Delancey St at SE corner",
+  "country": "USA",
+  "state": "Oklahoma",
+  "city": "Boulder",
+  "zip_code": 110386,
+  "year_built": 2019,
   "renovated": false,
   "building_size": 1750,
   "lot_size": 1800,
@@ -41,8 +41,8 @@ Authorization: <Bearer> {{token}}
   "featured": false,
   "importance": 0,
   "gps": {
-    "lat": -87,
-    "lng": 54
+    "lat": -78.9516030004786,
+    "lng": 45.82557300071668
   },
   "floors": [
     {
