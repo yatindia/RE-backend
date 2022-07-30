@@ -144,7 +144,7 @@ console.log('kkk')
 
     try {
         let data;
-        await Property.find({owner:req.params.id})
+        await Property.findById(req.params.id)
         .then(res => {
             data = res
         })
@@ -170,6 +170,43 @@ console.log('kkk')
     res.json(response)
 
 });
+
+//single user property
+property.get("/singleuserproperty/:id",async (req:Request, res:Response) => {
+    console.log('kkk')
+        let response:response = {
+            message : "somthing went wrong",
+            status: false
+        }
+    
+        try {
+            let data;
+            await Property.find({owner:req.params.id})
+            .then(res => {
+                data = res
+            })
+            .catch( error => {
+                
+                throw new Error(error)
+                
+            })
+    
+            response.message = "Property Fetched"
+            response.data = data
+            response.status = true
+            
+    
+        } catch (error:any) {
+    
+            response.message = "Please Enter All Essential Values"
+            response.errorMessage = error.message
+            
+        }
+    
+    
+        res.json(response)
+    
+    });
 
 //DELETE
 property.delete("/:id", async (req:Request, res:Response) => {
