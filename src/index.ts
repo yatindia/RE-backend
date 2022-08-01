@@ -5,15 +5,22 @@ import mongoose from "mongoose";
 import auth from "./routes/auth"
 import user from "./routes/user"
 import property from "./routes/property";
-
+import multer from "multer";
+import config from "../config";
+import {v4 as uuid} from "uuid"
+import { response } from "./types/types";
 
 
 
 
 const app = express();
 dotenv.config();
-app.use(express.json())
 app.use(cors())
+app.use(express.json({limit: "2mb"}))
+
+
+
+
 
 const connect = () => {
   try { mongoose.connect(`mongodb+srv://${process.env.MONGO_USERID}:${process.env.MONGO_PASSWORD}@cluster0.segtq.mongodb.net/test`);

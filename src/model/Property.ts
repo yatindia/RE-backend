@@ -2,7 +2,8 @@ import {Schema, model} from "mongoose";
 
 const PropertySchema = new Schema({
   owner: {type: String, required: true},
-  video: {type: String, required: true},
+  video: {type: String, required: false},
+  title: {type: String, required: true},
   photos: [{type: String, required: true}],
   type: {type: String, required: true},
   space_use: {type: String, required: true},
@@ -32,15 +33,18 @@ const PropertySchema = new Schema({
   floors: [
   
     {
-      floor_number:{type: Number, required: true},
-      floor_size: {type: Number, required: true},
-      term: {type: String, required: true},
-      rate: {type: String || Number, required: true},
-      space_use: {type: String, required: true},
-      condition: {type: String, required: true},
-      amenities: [{type: String, required: true}],
-      period_of_tenure: {type: Number, required: true},
-      avaliable: {type: Boolean, required: true},
+      required: false,
+      type: {
+        floor_number:{type: Number, required: true},
+        floor_size: {type: Number, required: true},
+        term: {type: String, required: true},
+        rate: {type: String || Number, required: true},
+        space_use: {type: String, required: true},
+        condition: {type: String, required: true},
+        amenities: [{type: String, required: true}],
+        period_of_tenure: {type: Number, required: true},
+        avaliable: {type: Boolean, required: true},
+      }
     }
   ]
   

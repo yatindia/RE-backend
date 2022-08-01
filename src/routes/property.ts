@@ -7,27 +7,22 @@ import {v4 as uuid} from "uuid"
 import path from "path"
 //@ts-ignore
 import config from "../../config"
+import fs from "fs"
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, path.join(config.maindir, "/assets/property"))
-    },
-    filename: (req, file, cb) => {
-      const {
-        originalname
-      } = file
-  
-      let finalName = () => {
-        // let ext = originalname.split(".")
-        return `${uuid()}.jpg`
-      }
-  
-      let file_name = finalName()
-      req.body.customFileUploadName = file_name
-  
-      cb(null, file_name)
-    },
-  })
+const upload = multer();
+
+async function fielUpload(req:Request, res:Response, next:NextFunction) {
+    console.log(  req.body);
+    let im = (req.body.image).replace(/^data:image\/png;base64,/, "")
+    let buffer = Buffer.from(im,'base64')
+    // buffer to image
+    let filename = uuid()+".jpg";
+    fs.writeFileSync(`${config.maindir}/uploads/${filename}`,buffer)
+    req.body.filename = filename
+
+    next()
+
+}
 
 
 
@@ -60,6 +55,32 @@ property.use((req:Request, res:Response, next:NextFunction)=>{
       });
   
 })
+
+//Image Upload
+property.post("/imageupload",fielUpload, async (req:Request, res:Response) => {
+
+    let value = req.body.filename
+    let response:response = {
+        message : "File Uploaded Failed",
+        status: false
+    }
+    
+    if (value) {
+        //* S-Response
+        
+        response.status = true,
+        response.message ="File Uploaded Successfully",
+        response.data = value
+
+       
+      }
+      console.log(value);
+      
+      res.json(response)
+
+   
+})
+
 
 //CREATE
 property.post("/create",async (req:Request, res:Response) => {
@@ -136,7 +157,6 @@ property.put("/:id", async (req:Request, res:Response) => {
 
 //READ
 property.get("/post/:id",async (req:Request, res:Response) => {
-console.log('kkk')
     let response:response = {
         message : "somthing went wrong",
         status: false
