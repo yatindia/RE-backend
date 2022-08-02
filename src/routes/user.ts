@@ -36,8 +36,6 @@ user.use((req:Request, res:Response, next:NextFunction)=>{
         }
       });
 
-
-   
 })
 
 
@@ -50,6 +48,40 @@ user.post("/", async (req: any, res: Response)=>{
 
   try {
     let loggingUser = await User.findById(req.body.authorization._id, {
+      password: 0
+    } );
+
+    if (!loggingUser) {
+      throw new Error("this account does not exist");
+    }else if (loggingUser.accountVerified == false) {
+      throw new Error("please verify your account");
+    }else {
+      response.data = loggingUser
+      response.status = true
+      response.message = "Logged in"
+    }
+
+  } catch (error: any) {
+    response = {
+      ...response,
+      status: false,
+      message: error.message,
+    };
+  }
+
+  res.json(response);
+})
+
+
+user.get("/", async (req: any, res: Response)=>{
+
+  let response: response = {
+    status: false,
+    message: "somthing went wrong, try later",
+  };
+
+  try {
+    let loggingUser = await User.findById(req.body._id, {
       password: 0
     } );
 

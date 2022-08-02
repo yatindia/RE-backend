@@ -237,10 +237,25 @@ property.delete("/:id", async (req:Request, res:Response) => {
     }
 
     try {
-        await Property.findOneAndDelete( {$and: [
+        await Property.findOne( {$and: [
             {_id: req.params.id}, 
             {owner: req.body.authorization._id}
         ] })
+        .then( async (res:any) => {
+            
+            if (res.photos && res.photos !=[]) {
+                (res.photos).forEach( (photo:any) => {
+                    fs.unlink(`${config.maindir}/uploads/${photo}`, async (err)=>{})
+                });
+            }
+
+            await Property.findOneAndDelete( {$and: [
+                {_id: req.params.id}, 
+                {owner: req.body.authorization._id}
+            ] })
+           
+            
+        })
         .catch( error => {
             
             throw new Error(error)
