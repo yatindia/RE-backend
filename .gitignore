@@ -9,3 +9,5 @@ node_modules
 
 # Ignore files related to API keys
 .env
+
+.image-upload-358514-053689216333.json

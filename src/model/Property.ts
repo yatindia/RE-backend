@@ -20,6 +20,7 @@ const PropertySchema = new Schema({
   building_size: {type: Number, required: true},
   lot_size: {type: Number, required: true},
   construction_type:{type: String, required: true},
+  sewer:{type: String, required: true},
   electricity: {type: String, required: true},
   zoning: {type: String, required: true},
   highlights: [{type: String, required: true}],

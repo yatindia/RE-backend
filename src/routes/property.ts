@@ -4,15 +4,21 @@ import { response } from "../types/types";
 import  jwt  from "jsonwebtoken";
 import multer from "multer"
 import {v4 as uuid} from "uuid"
+import {Storage} from "@google-cloud/storage"
 import path from "path"
+
 //@ts-ignore
 import config from "../../config"
 import fs from "fs"
 
+const storage = new Storage({
+    keyFilename : path.join(__dirname, "../../image-upload-358514-053689216333.json"),
+    projectId: "image-upload-358514"
+  });
+  
 const upload = multer();
 
 async function fielUpload(req:Request, res:Response, next:NextFunction) {
-    console.log(  req.body);
     let im = (req.body.image).replace(/^data:image\/png;base64,/, "")
     let img = im.replace(/^data:image\/jpeg;base64,/, "")
     let buffer = Buffer.from(im,'base64')
@@ -24,6 +30,20 @@ async function fielUpload(req:Request, res:Response, next:NextFunction) {
     next()
 
 }
+
+
+async function uploadFile(bucketName:string,filePath:string, destFileName:string) {
+    await storage.bucket(bucketName).upload(filePath, {
+      destination: destFileName,
+    });
+  
+    console.log(`${filePath} uploaded to ${bucketName}`);
+  }
+
+async function deleteFile(bucketName:string, fileName:string) {
+    await storage.bucket(bucketName).file(fileName).delete();
+    console.log(`${fileName} deleted from ${bucketName}`);
+  }
 
 
 
@@ -67,15 +87,102 @@ property.post("/imageupload",fielUpload, async (req:Request, res:Response) => {
     }
     
     if (value) {
-        //* S-Response
+        
+        let file = path.join(__dirname, `../../uploads/${value}`)
+        let bucket =  "clp-image";
+        let name = value;
+
+        uploadFile(bucket,file, name)
+        .then(()=>{
+            fs.unlink(file, ()=>{})
+        })
+        .catch(console.error)
         
         response.status = true,
         response.message ="File Uploaded Successfully",
         response.data = value
+        
 
        
       }
-      console.log(value);
+
+      
+      res.json(response)
+
+   
+})
+
+
+//Image Upload
+property.post("/imageupdate",fielUpload, async (req:Request, res:Response) => {
+
+    let value = req.body.filename
+    let _id = req.body._id
+    let response:response = {
+        message : "File Update Failed",
+        status: false
+    }
+    
+    
+    if (value) {
+        
+        let file = path.join(__dirname, `../../uploads/${value}`)
+        let bucket =  "clp-image";
+        let name = value;
+
+        await Property.findByIdAndUpdate( _id, {$addToSet: { photos: name}})
+        .then(async ()=>{
+
+          let check =  await  uploadFile(bucket,file, name)
+          return check
+        })
+
+        .then(()=>{
+            fs.unlink(file, ()=>{})
+        })
+        .catch(console.error)
+        .finally(()=>{
+            response.status = true,
+            response.message ="File Update Successfull",
+            response.data = value
+
+            res.json(response)
+        })
+
+
+      }
+      
+      
+
+   
+})
+
+
+property.post("/imagedelete", async (req:Request, res:Response) => {
+
+    let name = req.body.filename
+    let property = req.body._id
+    let response:response = {
+        message : "File Uploaded Failed",
+        status: false
+    }
+    
+    if (name && property) {
+
+        Property.findByIdAndUpdate(property , {$pull: { photos: name}})
+        .then(()=>{
+            let bucket =  "clp-image";
+
+
+        deleteFile(bucket, name)
+        .catch(console.error)
+        
+        response.status = true,
+        response.message ="File Deleted Successfully"
+        })
+        
+      }
+      
       
       res.json(response)
 
