@@ -352,8 +352,10 @@ property.delete("/:id", async (req:Request, res:Response) => {
         .then( async (res:any) => {
             
             if (res.photos && res.photos !=[]) {
-                (res.photos).forEach( (photo:any) => {
-                    fs.unlink(`${config.maindir}/uploads/${photo}`, async (err)=>{})
+                (res.photos).forEach( async (photo:any) => {
+                    let bucket =  "clp-image";
+                    deleteFile(bucket, photo)
+                    .catch(()=>{})
                 });
             }
 
@@ -379,7 +381,6 @@ property.delete("/:id", async (req:Request, res:Response) => {
         response.message = "Please Enter All Essential Values"
         
     }
-
 
     res.json(response)
 });
