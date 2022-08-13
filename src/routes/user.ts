@@ -1,11 +1,119 @@
 import "dotenv/config";
 import express, { Application, Request, Response, NextFunction } from "express";
 import {User} from "../model/User";
-import config from "../config";
 import { response } from "../types/types";
 import  jwt  from "jsonwebtoken";
+import {v4 as uuid} from "uuid"
+import {Storage} from "@google-cloud/storage"
+import fs from "fs"
+import path from "path"
 
+//@ts-ignore
+import config from "../../config";
 const user: Application = express();
+
+const storage = new Storage({
+  keyFilename : path.join(__dirname, "../../image-upload-358514-053689216333.json"),
+  projectId: "image-upload-358514"
+});
+
+async function fielUpload(req:Request, res:Response, next:NextFunction) {
+  let im = (req.body.image).replace(/^data:image\/png;base64,/, "")
+  let img = im.replace(/^data:image\/jpeg;base64,/, "")
+  let buffer = Buffer.from(im,'base64')
+  // buffer to image
+  let filename = uuid()+".jpg";
+  fs.writeFileSync(`${config.maindir}/uploads/${filename}`,buffer)
+  req.body.filename = filename
+
+  next()
+
+}
+
+async function uploadFile(bucketName:string,filePath:string, destFileName:string) {
+  await storage.bucket(bucketName).upload(filePath, {
+    destination: destFileName,
+  });
+
+}
+
+//Image Upload
+user.post("/imageupload",fielUpload, async (req:Request, res:Response) => {
+
+  let value = req.body.filename
+  let response:response = {
+      message : "File Uploaded Failed",
+      status: false
+  }
+  
+  if (value) {
+      
+      let file = path.join(__dirname, `../../uploads/${value}`)
+      let bucket =  "clp-profile-image";
+      let name = value;
+
+      uploadFile(bucket,file, name)
+      .then(()=>{
+          fs.unlink(file, ()=>{})
+      })
+      .catch(console.error)
+      
+      response.status = true,
+      response.message ="File Uploaded Successfully",
+      response.data = value
+      
+
+     
+    }
+
+    
+    res.json(response)
+
+ 
+})
+
+
+//Image Upload
+user.post("/imageupdate",fielUpload, async (req:Request, res:Response) => {
+
+  let value = req.body.filename
+  let _id = req.body._id
+  let response:response = {
+      message : "File Update Failed",
+      status: false
+  }
+  
+  
+  if (value) {
+      
+      let file = path.join(__dirname, `../../uploads/${value}`)
+      let bucket =  "clp-profile-image";
+      let name = value;
+
+      await User.findByIdAndUpdate( _id, { profile: name})
+      .then(async ()=>{
+
+        let check =  await  uploadFile(bucket,file, name)
+        return check
+      })
+
+      .then(()=>{
+          fs.unlink(file, ()=>{})
+      })
+      .catch(console.error)
+      .finally(()=>{
+          response.status = true,
+          response.message = "Profile photo Update Successful",
+          response.data = value
+
+          res.json(response)
+      })
+
+
+    }
+    
+})
+
 
 user.use(express.urlencoded({ extended: true }));
 
