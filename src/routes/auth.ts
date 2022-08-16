@@ -161,8 +161,8 @@ auth.post("/register", async (req: Request, res: Response) => {
           host: "smtp.ethereal.email",
           port: 587,
           auth: {
-            user: "maci.medhurst97@ethereal.email",
-            pass: "hVZ63n8vnVcf6JhhXb",
+            user: "wilbert.runte35@ethereal.email",
+            pass: "XKY8jWXFsJ1hdy2fKd",
           },
         });
 
@@ -511,8 +511,8 @@ auth.post("/reverification", async (req: any, res: Response) => {
             host: "smtp.ethereal.email",
             port: 587,
             auth: {
-              user: "maci.medhurst97@ethereal.email",
-              pass: "hVZ63n8vnVcf6JhhXb",
+              user: "wilbert.runte35@ethereal.email",
+              pass: "XKY8jWXFsJ1hdy2fKd",
             },
           });
 
