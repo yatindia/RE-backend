@@ -28,7 +28,6 @@ auth.post("/sendOTP", async (req, res) => {
 
   const otp = Math.floor(100000 + Math.random() * 900000); // generate OTP
 
-  console.log(otp);
 
   client.messages
 
@@ -75,7 +74,6 @@ auth.get("/checkOTP", async (req, res) => {
     (await User.findOne({
       phoneNumber
     })) || false;
-    console.log(user);
     
   if (user) {
     User.findByIdAndUpdate(user._id, { mobileVerified: true }).catch(() => {
@@ -119,7 +117,10 @@ auth.post("/register", async (req: Request, res: Response) => {
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
         password: req.body.password,
+        profile: req.body.profile
       };
+
+      
 
       const passwordStrengthPattern =
         /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/i;
@@ -188,13 +189,13 @@ auth.post("/register", async (req: Request, res: Response) => {
           },
         };
 
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("Email sent: " + info.response);
-          }
-        });
+        // transporter.sendMail(mailOptions, function (error, info) {
+        //   if (error) {
+        //     console.log(error);
+        //   } else {
+        //     console.log("Email sent: " + info.response);
+        //   }
+        // });
       })();
       // return res.json({
       //   response
@@ -202,8 +203,11 @@ auth.post("/register", async (req: Request, res: Response) => {
     } catch (error: any) {
       response.status = false;
       response.message = error.message;
+      
     }
   }
+  response.errorMessage = "he is it"
+
   return res.json({
     response,
   });
@@ -232,7 +236,6 @@ auth.get("/verify", async (req: Request, res: Response) => {
       })) || false;
 
     if (user) {
-      console.log(user);
 
       User.findByIdAndUpdate(user._id, { accountVerified: true }).catch(() => {
         throw new Error();

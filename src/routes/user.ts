@@ -19,8 +19,11 @@ const storage = new Storage({
 
 async function fielUpload(req:Request, res:Response, next:NextFunction) {
   let im = (req.body.image).replace(/^data:image\/png;base64,/, "")
-  let img = im.replace(/^data:image\/jpeg;base64,/, "")
-  let buffer = Buffer.from(im,'base64')
+  // let img = (req.body.image).replace(/^data:image\/jpeg;base64,/, "")
+
+  
+  let finalImage = im
+  let buffer = Buffer.from( finalImage,'base64')
   // buffer to image
   let filename = uuid()+".jpg";
   fs.writeFileSync(`${config.maindir}/uploads/${filename}`,buffer)
